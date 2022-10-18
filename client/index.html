@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Game</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+
+    
+    <h1>
+      Welcome <span id="username" contenteditable="false" placeholder="username"></span>!
+      <br>
+      <span id="rgbCode">Color Perya Game</span>
+      <br>
+    </h1>
+    
+    <div id="stripe">
+      <div id="container" class="container--wrapper">
+        <button id="spin">[ spin ]</button>
+        <div id="userConnected">Online 0 users</div>
+        <button id="reset">[ reset ]</button>
+      </div>
+    </div>
+    
+    <div class="dashboard server" id="server">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+    </div>
+    
+    <div class="dashboard client" id="client">
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+    </div>
+
+    <div class="dashboard" id="bets">
+      <div class="totalCredits">
+        <span>Credits: </span>
+        <!-- <p data-totalCredits="20" onchange="betsChange(this)">20</p> -->
+        <p data-totalCredits="20" onchange="betsChange(this)">20</p>
+      </div>
+      <div class="circle"><p data-bets="1">1</p></div>
+      <div class="circle"><p data-bets="5">5</p></div>
+      <div class="circle"><p data-bets="10">10</p></div>
+      <div class="circle"><p data-bets="20">20</p></div>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="src/client.js"></script>
+
+  </body>
+</html>
