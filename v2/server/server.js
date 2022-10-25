@@ -50,6 +50,19 @@ io.on('connection', async (socket) => {
   var clientIpAddress= socket.request.socket.remoteAddress;
   // console.log(clientIpAddress)
 
+  socket.use(([event, ...args], next) => {
+    if (isUnauthorized(event)) {
+      return next(new Error("unauthorized event"));
+    }
+    next();
+  });
+
+  socket.on("error", (err) => {
+    if (err && err.message === "unauthorized event") {
+      socket.disconnect();
+    }
+  });
+
   /**
    * 
    * */
