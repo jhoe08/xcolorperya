@@ -36,6 +36,10 @@ let connectedUserMap = new Map();
 
 let bettors = {};
 
+/** users **/
+let users = []
+
+
 
 io.on('connection', async (socket) => {
   const {
@@ -93,11 +97,6 @@ io.on('connection', async (socket) => {
     // reset after sending the data
     arr = []
   })
-
-  socket.on('resetHandler', (data) => {
-    io.emit('resetReceiver');
-  })
-
 
   /**
    * bettors
@@ -165,6 +164,88 @@ io.on('connection', async (socket) => {
     no_users--;
     io.emit('countUsers', no_users);
   });
+
+
+
+  /**
+   * VERSION 2
+   * */
+
+    const items = ['🍭','❌','⛄️','🦄','🍌','💩','👻','😻','💵','🤡','🦖','🍎','😂','👽','🤑','❤️','☠️','💦','♎','👀']
+    let itemsResults = []
+    let userItems = []
+    
+    var address2 = socket.handshake.address;
+    console.log('New connection from ' + address.address + ':' + address.port);
+
+  /**
+   * GLOBAL FUNCTIONS
+   * **/
+
+  const pushArrayItem = (arr, item) => {
+    return (arr.indexOf(item) == -1) ? arr.push(item) : false
+  }  
+
+  const removeArrayItem = (arr, item) => {
+    for( var i = 0; i < arr.length; i++){                                    
+      if ( arr[i] == item) { 
+          arr.splice(i, 1); 
+          i--; 
+      }
+    }
+    return arr;
+  }
+  
+  const pushObjectItem = (arr, index, item) => {
+    // return arr[index] = item
+  }
+
+  /**
+   * endof GLOBAL FUNCTIONS 
+   * **/
+  
+    io.to(socket.id).emit('loadBoard', items)
+    // io.to(socket.id).emit('loadLives', ['❤️','❤️','❤️','❤️','❤️'])
+    
+    socket.on('spinHandlerv2', () => {
+      let arr = [];      
+      for (let index = 0; index < 3; index++) {
+        let rn = generateRandomNumbers( items )        
+        arr.push( rn )
+        itemsResults.push(rn[items.length-1])
+      }      
+      io.emit('spinHandlerResults', arr)      
+      arr = []
+      // itemsResults = []
+    })
+
+    socket.on('resetHandler', (data) => {
+      io.emit('resetReceiver');
+    })
+
+    socket.on('receiveBettorBets', (args) => {      
+      console.log(args)
+      if(args.option=='add'){
+        // pushArrayItem(users, args.socketId)
+        pushArrayItem(userItems, args.item)
+        pushObjectItem(users, String(args.socketId), userItems)
+      } 
+      if(args.option=='remove') {        
+        removeArrayItem(userItems, args.item)
+      }
+
+      // console.log( users )
+      // console.log( userItems )
+
+      // pushItem(users[args.socketId], userItems)
+      // pushObjectItem(users, args.socketId, userItems)
+
+      console.log( 'users', users )
+
+    })
+  /**
+   * endof VERSION 2
+   * */
 
 });
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Game</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+
+    <div id="app" class="v2">
+      <div class="users">
+        Howdy, Yawa!
+        <div class="credits"></div>
+      </div>
+      <div class="doors">
+        <div class="door">
+          <div class="boxes">
+            <div class="box blink">?</div>
+          </div>
+        </div>
+    
+        <div class="door">
+          <div class="boxes">
+            <div class="box blink">?</div>
+          </div>
+        </div>
+    
+        <div class="door">
+          <div class="boxes">
+            <div class="box blink">?</div>
+          </div>
+        </div>
+      </div>
+      <div class="buttons">
+        <button id="spinner">Play</button>
+        <button id="reseter">Reset</button>
+      </div>
+      <div class="boards disabled"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="src/client.js"></script>
+
+  </body>
+</html>

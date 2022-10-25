@@ -25,15 +25,15 @@ const randomColor = () => {
 const loadColor = () => {
   for (var i = 0; i < colors.length-1; i++) {
     clientSquare[i].setAttribute('id', colors[i])
-    clientSquare[i].style.background = colors[i];
+    clientSquare[i].style.backgroundColor = colors[i];
   }
 }
 
 const spinColor = (reset=false) => {  
   reset ? black = colors.length - 1 : randomColors = generateRandomColors(numSquares);
   for (var i = 0; i < serverSquare.length; i++) {
-    reset ? serverSquare[i].style.background =  colors[black] : 
-    serverSquare[i].style.background = colors[randomColors[i]];
+    reset ? serverSquare[i].style.backgroundColor =  colors[black] : 
+    serverSquare[i].style.backgroundColor = colors[randomColors[i]];
   }
 }
 
@@ -74,7 +74,31 @@ const checkData = () => {
  * endof Username
  **/
 
+const shuffle = ([...arr]) => {
+  let m = arr.length;
+  while (m) {
+    const i = Math.floor(Math.random() * m--);
+    [arr[m], arr[i]] = [arr[i], arr[m]];
+  }
+  return arr;
+}
+
+
+
 (() => {
+
+  
+
+  // const groups = 1
+  // const arr = []
+
+  // for (let n = 0; n < (groups > 0 ? groups : 1); n++) {
+  //   arr.push(...colors);
+  // }
+
+  console.log( shuffle(colors) )
+  console.log( shuffle(colors) )
+  console.log( shuffle(colors) )
 
   var socket = io();
  
@@ -92,8 +116,9 @@ const checkData = () => {
 
   const totalBets = 2;
   let bettings = [];
-
   let currentSpin = [];
+
+  const isClient = window.location.pathname == '/' ? true : false;
 
   socket.emit('recieveUserName', {name: username});
 
@@ -166,16 +191,51 @@ const checkData = () => {
   socket.on('recieveBettors', function(data){
     // bettors = data;
     console.log('client-recieveBettors', data)
+    // console.log('data[0]', data[0])
+
+    const playersDiv = document.querySelector('#players')
+    playersDiv.innerHTML = ''
+    for (const key in data) {
+      if (Object.hasOwnProperty.call(data, key)) {
+        const element = data[key];        
+        let playerDiv = document.createElement('div')
+        playerDiv.classList.add('player')
+        playerDiv.classList.add(key)
+        playerDiv.innerHTML = key
+
+        for(const key2 in element) {
+          if (Object.hasOwnProperty.call(element, key2)) {
+            const color = element[key2]            
+            let betsDiv = document.createElement('div')
+            betsDiv.classList.add('square')
+            betsDiv.style.backgroundColor = color;
+            playerDiv.appendChild(betsDiv)
+          }
+        }
+
+        playersDiv.appendChild(playerDiv)
+      }
+    }
   })
   
-  socket.on('congratulations', function(data){
-    console.log(data)
-    alert('You Wins!!!');
+  const clientDiv = document.querySelector('#client')
+  const serverDiv = document.querySelector('#server')
+
+  socket.on('wins', function(data){
+    console.log(data)    
+
+    if(isClient){
+      alert('You Wins!!!');
+    }
   })
 
-  socket.on('loss', function(data){
-    console.log(data)
-    alert('You Loss!!!');
+  socket.on('lose', function(data){
+    console.log(data)    
+    clientDiv.remove()
+    if(isClient){
+      alert('You Lose!!!');
+    }
+    
   })
 
   let totalCredits = document.querySelector('[data-totalcredits]');
@@ -200,7 +260,31 @@ const checkData = () => {
     })
   })
 
+  ////////////////////////////////////////////////
+  const betsDiv = document.querySelector('#bets');
+
+  if(window.location.pathname == '/'){
+
+    const stripe = document.querySelector('#container')
+    const spinBtn = document.querySelector('#spin')
+    const resetBtn = document.querySelector('#reset')
+    
+    
+    stripe.classList.add('client')
+    
+    spinBtn.remove()
+    resetBtn.remove()
+    serverDiv.remove()
+  } else {
+    
+    clientDiv.remove()
+  }
+
+  betsDiv.remove()
 
 
+  socket.on('shuffleReciever', (data)=>{
+    
+  })
 
 })();

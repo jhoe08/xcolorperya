@@ -1,0 +1,101 @@
+*, :after, :before {
+  border: 0 solid;
+  box-sizing: border-box;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  background: #1a2b45;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.users {
+  margin: 1rem 0 1rem 0;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+}
+.doors {
+  display: flex;
+}
+
+.door {
+  background: #fafafa;
+  width: 100px;
+  height: 110px;
+    width: 320px;
+    height: 330px;
+  overflow: hidden;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.boxes {
+  transition: transform 1s ease-in-out;
+}
+
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  font-size: 15rem;
+  /* width: 100px;
+  height: 110px; */
+}
+
+.buttons {
+  margin: 1rem 0 1rem 0;
+}
+
+button {
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin: 0 0.2rem;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+}
+
+.boards {
+  display: flex;
+  width: 70%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.board {
+  font-size: 6rem;
+  position: relative;
+  cursor: pointer;
+}
+
+/* .selected {
+  background-image: url(../assets/chip.png) !important;
+  background-size: 20px;
+  background-position: right;
+} */
+
+.selected:before {
+  content: '';
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  background-image: url(../assets/chips.png) !important;
+  background-size: 80px;
+  background-position: bottom center;  
+  background-repeat: no-repeat;
+}
+
+/** first-box **/
+.pulse {
+  animation: beat .25s infinite alternate;
+}
+@keyframes beat{
+	to { transform: scale(0.8); }
+}
+/** endof **/

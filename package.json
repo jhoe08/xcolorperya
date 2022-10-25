@@ -2,10 +2,10 @@
   "name": "xcolorperya",
   "version": "1.0.0",
   "description": "A tiny perya color game",
-  "main": "v1/server/server.js",
+  "main": "v2/server/server.js",
   "scripts": {
-    "dev": "nodemon v1/server/server.js",
-    "start": "node v1/server/server.js",
+    "dev": "nodemon v2/server/server.js",
+    "start": "node v2/server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
