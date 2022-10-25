@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon v2/server/server.js",
     "start": "node v2/server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "netDev": "./node_modules/.bin/netlify-lambda serve v2/server",
+    "netBuild": "./node_modules/.bin/netlify-lambda build v2/server"
   },
   "keywords": [
     "Multiplayer",
