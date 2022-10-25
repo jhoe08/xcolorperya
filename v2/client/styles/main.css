@@ -72,6 +72,15 @@ button {
   cursor: pointer;
 }
 
+.disabled .board {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.disabled .board.selected {
+  opacity: 1;
+}
+
 /* .selected {
   background-image: url(../assets/chip.png) !important;
   background-size: 20px;

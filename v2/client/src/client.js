@@ -6,6 +6,7 @@
   const spinnerDiv = document.querySelector('#spinner')
   const reseterDiv = document.querySelector('#reseter')
   const doors = document.querySelectorAll('.door')
+  const boardsDiv = document.querySelector('.boards')
   const boards = document.querySelectorAll('.board')
   let inprogress = false;
 
@@ -48,7 +49,7 @@
         board.innerHTML = element
         boards.appendChild(board)        
       board.addEventListener('click', function(){
-        if(!inprogress){
+        if(!inprogress){          
           if(board.classList.contains('selected')){
             board.classList.remove('selected')
             socket.emit('receiveBettorBets',{
@@ -90,6 +91,7 @@
   function init(firstInit = true, groups = 1, duration = 1, lists=[]) {
 
     inprogress = false;
+    boardsDiv.classList.remove('disabled')
     spinner.style.display = 'block'
     reseter.style.display = 'none'
 
@@ -156,6 +158,7 @@
     init(false, 1, 2, data);
     
     inprogress = true;
+    boardsDiv.classList.add('disabled')
     spinner.style.display = 'none'
     reseter.style.display = 'block'
 

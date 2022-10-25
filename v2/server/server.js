@@ -50,13 +50,6 @@ io.on('connection', async (socket) => {
   var clientIpAddress= socket.request.socket.remoteAddress;
   // console.log(clientIpAddress)
 
-  socket.use(([event, ...args], next) => {
-    if (isUnauthorized(event)) {
-      return next(new Error("unauthorized event"));
-    }
-    next();
-  });
-
   socket.on("error", (err) => {
     if (err && err.message === "unauthorized event") {
       socket.disconnect();
@@ -158,7 +151,7 @@ io.on('connection', async (socket) => {
 
     
 
-    console.log('user', user )
+    // console.log('user', user )
 
   })  
 
@@ -210,7 +203,7 @@ io.on('connection', async (socket) => {
   }
   
   const pushObjectItem = (arr, index, item) => {
-    // return arr[index] = item
+    return arr[index] = item
   }
 
   /**
@@ -241,7 +234,7 @@ io.on('connection', async (socket) => {
       if(args.option=='add'){
         // pushArrayItem(users, args.socketId)
         pushArrayItem(userItems, args.item)
-        pushObjectItem(users, String(args.socketId), userItems)
+        pushObjectItem(users, args.socketId, userItems)
       } 
       if(args.option=='remove') {        
         removeArrayItem(userItems, args.item)
@@ -251,7 +244,7 @@ io.on('connection', async (socket) => {
       // console.log( userItems )
 
       // pushItem(users[args.socketId], userItems)
-      // pushObjectItem(users, args.socketId, userItems)
+      pushObjectItem(users, args.socketId, userItems)
 
       console.log( 'users', users )
 
