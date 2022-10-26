@@ -1,5 +1,8 @@
 (() => {  
   const socket = io();
+
+  console.log(socket)
+
   const isClient = window.location.pathname == '/' ? true : false;
   let betsLimit = 5;
 
@@ -11,7 +14,6 @@
   let inprogress = false;
 
   const socketId = socket.id;
-  console.log(socketId)
 
   spinnerDiv.addEventListener('click', function(){
     socket.emit('spinHandlerv2')    
