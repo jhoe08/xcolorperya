@@ -2,10 +2,20 @@
 <html lang="en">
   <head>
     <title>My Game</title>
+    <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/confetti.css">
   </head>
   <body>
+    <!-- <div class="wrapper">
+      <div class="modal">
+        <span class="emoji round">🏆</span>
+        <h1>Congratulation, Ahmed</h1>
+        <a href="#" class="modal-btn">Celebrate</a>
+      </div>
+      <div id="confetti-wrapper"></div>
+    </div> -->
 
     <div id="app" class="v2">
       <div class="users">
@@ -38,9 +48,13 @@
       <div class="boards"></div>
     </div>
 
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.min.js"></script>
+    <div class="game-over hidden">
+      <p>Game Over</p>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="src/client.js"></script>
+    <script type="text/javascript" src="src/confetti.js"></script>
 
   </body>
 </html>

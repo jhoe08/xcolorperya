@@ -37,8 +37,12 @@ let connectedUserMap = new Map();
 let bettors = {};
 
 /** users **/
-let users = []
+// let users = []
 
+let users = {}
+
+/** lives **/
+let lives = ['❤️','❤️','❤️','❤️','❤️'];
 
 
 io.on('connection', async (socket) => {
@@ -177,12 +181,23 @@ io.on('connection', async (socket) => {
    * VERSION 2
    * */
 
-    const items = ['🍭','❌','⛄️','🦄','🍌','💩','👻','😻','💵','🤡','🦖','🍎','😂','👽','🤑','❤️','☠️','💦','♎','👀']
+    const items = ['🍭','❌','⛄️','🦄','🍌','💩','👻','😻','💵','🤡','🦖','🍎','🏆','👽','🤑','❤️','☠️','💦','♎','👀']
     let itemsResults = []
     let userItems = []
     
     var address2 = socket.handshake.address;
-    console.log('New connection from ' + address.address + ':' + address.port);
+    // console.log('New connection from ' + address.address + ':' + address.port);
+    // socket.on('user connected', (socketId)=>{
+    //   let temp = pushObjectItem(users, socketId, ['lives', lives])
+    //   console.log( socketId )
+    //   return temp
+    // })
+    
+    io.to(socket.id).emit('loadBoard', items)    
+    io.to(socket.id).emit('loadLives', lives)
+    socket.on('livesHandler', (args)=>{
+      pushObjectItem(users, args[0], ['lives', args[1]] )
+    })
 
   /**
    * GLOBAL FUNCTIONS
@@ -202,16 +217,93 @@ io.on('connection', async (socket) => {
     return arr;
   }
   
+  // pushObjectItem(users, args.socketId, ['items', userItems])
   const pushObjectItem = (arr, index, item) => {
-    return arr[index] = item
+    if(typeof item === 'object') {
+      let key = item[0]
+      let value = item[1]
+      
+      if(arr[index]){
+        arr[index][key] = value
+      } else {
+        if(key=='items') arr[index] = { 'items': value }
+        else if(key=='lives') arr[index] = { 'lives': value }
+      }
+      
+    } else if(typeof item === 'array') {
+      arr[index] = item
+    }
+    
+    // console.log('arr', arr)
+    return arr 
+  }
+
+  const removeObjectItem = (arr, index, args) => {
+    if(args[0]==='items'){
+      let items = arr[index]['items']
+      removeArrayItem(items, args[1])
+    } else if(args[0]==='lives'){
+      let lives = arr[index]['lives']
+      lives.pop()
+    }   
+    return arr;
+  }
+
+  const checkItem_x = (item1, item2) => {
+  // console.log('item2', item2)
+
+    for (const key in item2) {
+      if (Object.hasOwnProperty.call(item2, key)) {        
+        let filter = item1.filter( element => item2[key].includes(element))
+        if( filter.length != 0 ) {
+          console.log(`${key} is one of the winners`, filter)
+        } else {
+          // lives.pop()
+          console.log(`${key} is one of the losers`, lives)
+          // io.to(`${key}`).emit('loadLives', lives)
+        }
+      }
+    }
+  }
+
+  const checkItem = (results, users) => {
+    for (const user in users) {
+      if (Object.hasOwnProperty.call(users, user)) {
+        if( users[user]['items'] ) {
+          let items = users[user]['items']
+          let filter = results.filter( element => items.includes(element))
+          if( filter.length != 0 ) {
+            console.log(`${user} is one of the winners`, filter)
+          } else {
+            removeObjectItem(users, user, ['lives'])
+            // console.log(`${user} is one of the losers`)
+          }
+        } else {
+          removeObjectItem(users, user, ['lives'])
+          // console.log(`${user} is one of the losers`)
+        }
+        // console.log(users[user]['lives'])
+        io.to(user).emit('loadLives', users[user]['lives'])
+      }
+    }
+  }
+
+  const checkLives = () => {
+    for (const user in users) {
+      if (Object.hasOwnProperty.call(users, user)) {
+        if( users[user]['lives'] ) {
+          let items = users[user]['lives']
+          if(items == 0){
+            io.to(user).emit('overLives')
+          }          
+        }        
+      }
+    }
   }
 
   /**
    * endof GLOBAL FUNCTIONS 
    * **/
-  
-    io.to(socket.id).emit('loadBoard', items)
-    // io.to(socket.id).emit('loadLives', ['❤️','❤️','❤️','❤️','❤️'])
     
     socket.on('spinHandlerv2', () => {
       let arr = [];      
@@ -222,33 +314,34 @@ io.on('connection', async (socket) => {
       }      
       io.emit('spinHandlerResults', arr)      
       arr = []
-      // itemsResults = []
+
+      checkItem(itemsResults, users)
+      checkLives()
     })
 
     socket.on('resetHandler', (data) => {
       io.emit('resetReceiver');
+      // reset results
+      itemsResults = []
     })
 
-    socket.on('receiveBettorBets', (args) => {      
-      console.log(args)
+
+
+
+
+    socket.on('receiveBettorBets', (args) => {
+      // console.log(args)
+      let temp
       if(args.option=='add'){
-        // pushArrayItem(users, args.socketId)
         pushArrayItem(userItems, args.item)
-        pushObjectItem(users, args.socketId, userItems)
+        pushObjectItem(users, args.socketId, ['items', userItems])
       } 
       if(args.option=='remove') {        
-        removeArrayItem(userItems, args.item)
+        removeObjectItem( users, args.socketId, ['items', args.item] )
       }
-
-      // console.log( users )
-      // console.log( userItems )
-
-      // pushItem(users[args.socketId], userItems)
-      pushObjectItem(users, args.socketId, userItems)
-
-      console.log( 'users', users )
-
+      // console.log( 'temp', users )
     })
+
   /**
    * endof VERSION 2
    * */

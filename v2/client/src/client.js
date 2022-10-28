@@ -1,13 +1,11 @@
 (() => {  
   const socket = io();
 
-  console.log(socket)
-
   const isClient = window.location.pathname == '/' ? true : false;
   let betsLimit = 5;
 
-  const spinnerDiv = document.querySelector('#spinner')
-  const reseterDiv = document.querySelector('#reseter')
+  console.log( socket )
+  const appDiv = document.querySelector('#app')
   const doors = document.querySelectorAll('.door')
   const boardsDiv = document.querySelector('.boards')
   const boards = document.querySelectorAll('.board')
@@ -15,12 +13,23 @@
 
   const socketId = socket.id;
 
-  spinnerDiv.addEventListener('click', function(){
-    socket.emit('spinHandlerv2')    
-  })
+  const spinnerDiv = document.querySelector('#spinner')
+  const reseterDiv = document.querySelector('#reseter')
 
-  reseterDiv.addEventListener('click', function(){
-    socket.emit('resetHandler')
+  if( !isClient ) {    
+    spinnerDiv.addEventListener('click', function(){
+      socket.emit('spinHandlerv2')    
+    })
+    reseterDiv.addEventListener('click', function(){
+      socket.emit('resetHandler')
+    })
+  } else {
+    spinnerDiv.remove()
+    reseterDiv.remove()
+  }
+
+  socket.emit('user connected', (data)=>{
+    return socket.id
   })
 
   // instead of spin, suffle, results, reset
@@ -28,14 +37,6 @@
   // init(false, 1, 2);
   socket.on('spinHandlerResults', function(lists) {
     spin(lists)
-    let box1 = lists[0][lists[0].length-1]
-    let box2 = lists[1][lists[1].length-1]
-    let box3 = lists[2][lists[2].length-1]
-
-    if( box1 === box2 && box2 === box3 && box3 === box1 ){
-      console.log('Congrats you win ₱333.00')
-    }
-    
   })
 
   socket.on('resetReceiver', function(data) {
@@ -81,12 +82,20 @@
   })
 
   socket.on('loadLives', function(data){
+    socket.emit('livesHandler', [socket.id, data])
     let credits = document.querySelector('.credits')
+    credits.innerHTML = ''
     data.forEach((life, index) => {
       let live = document.createElement('span')
-      live.innerHTML = life;credits
+      live.innerHTML = life;//credits
       credits.appendChild(live)
     })
+  })
+
+  socket.on('overLives', function(){
+    appDiv.remove()
+    const gameOverDiv = document.querySelector('.game-over')
+    gameOverDiv.classList.remove('hidden')
   })
 
   /** initialize - DO NOT TOUCH **/
@@ -94,8 +103,8 @@
 
     inprogress = false;
     boardsDiv.classList.remove('disabled')
-    spinner.style.display = 'block'
-    reseter.style.display = 'none'
+    spinnerDiv.style.display = 'block'
+    reseterDiv.style.display = 'none'
 
     // for (const door of doors) {
     doors.forEach((door, index) => {
@@ -161,8 +170,8 @@
     
     inprogress = true;
     boardsDiv.classList.add('disabled')
-    spinner.style.display = 'none'
-    reseter.style.display = 'block'
+    spinnerDiv.style.display = 'none'
+    reseterDiv.style.display = 'block'
 
     for (const door of doors) {
       const boxes = door.querySelector('.boxes');
@@ -172,7 +181,7 @@
     }
   }
 
-  init()
+  init()  
   /** endof - DO NOT TOUCH  **/
 
 })();
